@@ -7,14 +7,14 @@
 Come up with interfaces for 3 possible classes you think you may need for your project. Again, brainstorm a little. Nothing is *wrong*.
 
 ## Game Context
-Survivie the walk through the nature perserve! While walking through the nature perserve, player will have to play a series of minigame to survive. At the end of the game, there will be a suprise for the user!
+Survive the walk through the nature preserve! While walking through the nature preserve, the player will have to play a series of minigames to survive. At the end of the game, there will be a surprise for the user!
 
 ## Class Interface 1
 
 class Player:
   attributes:
     (x, y)
-    image
+    image   sprite
     health
     inventory
     name
@@ -26,7 +26,6 @@ class Player:
     attack()
 
     jump()  ---For a 3D, definitely but for a 2D game, jump won't be helpful
-(kalvin--feel free to change anything, i'm just brainstorming here because we don't have anything yet :))
 
 ## Class Interface 2
 class GameOneBear:

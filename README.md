@@ -38,12 +38,27 @@ https://replit.com/join/wbpdwumwzr-kalvinweng1)
          For each additional module you should include
          - url for the module documentation
          - a short description of the module >>
+=============================================================
+import requests
+  -https://www.dataquest.io/blog/python-api-tutorial/
+  - used to import files or datas from the web to help aid in like adding picutres to the game
+import random, pygame, math
+  - class notes
+  - really depends on situation but generally speaking to help with a random selection for import random; pygame to run the whole thing; and math to some math problems with the pos of certain objects
+  - not really sure if I need the math module but maybe
+============================
 * Class Interface Design
     * << A simple drawing that shows the class relationships in your code (see below for an example). This does not need to be overly detailed, but should show how your code fits into the Model/View/Controller paradigm. >>
-        * ![class diagram](assets/class_diagram.jpg) 
+        * ![class diagram](assets/class_diagram.jpg)
+================================================
+https://jamboard.google.com/d/1FnbirFeLqDNUrMsNV_nTlI8YGqxwCTqWraLUG-juG9c/viewer?f=0
+========================================
 * Classes
     * << You should have a list of each of your classes with a description. >>
-
+    * ===============================================
+* Player-the basic information about the player and the items they have
+* Inventory- the value of the items and a function to help decide the rewards
+* Display-- change the screen when enter neew game and the winning screen at the end of the game
 ## Project Structure and File List
 
 The Project is broken down into the following file structure:

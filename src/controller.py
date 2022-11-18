@@ -37,14 +37,15 @@ class Controller:
   def mainmenuloop(self):
     while self.screen==#above value
       #EVENT LOOP
-      if event.type==pygame.MOUSEBUTTONDOWN:
-        clickpos=event.pos
-        if startbutton.collidepoint(clickpos):
-          self.screen=#some value that represents the main game
-        elif minigame.collidepoint(clickpos):
-          self.screen=#value that rep.s minigame selection menu
-        elif instructions.collidepoint(clickpos):
-          self.screen=#represents instructions menu
+      for event in pygame.event.get():
+        if event.type==pygame.MOUSEBUTTONDOWN:
+          clickpos=event.pos
+          if startbutton.collidepoint(clickpos):
+            self.screen=#some value that represents the main game
+          elif minigame.collidepoint(clickpos):
+            self.screen=#value that rep.s minigame selection menu
+          elif instructions.collidepoint(clickpos):
+            self.screen=#represents instructions menu
       
       #UPDATE DATA (no data? I think?)
 
@@ -62,12 +63,13 @@ class Controller:
     isjumping=False
     while self.screen==#some value:
       #EVENT LOOP
-      if event.type==pygame.KEYDOWN:
-        key=event.key
-      elif event.type==pygame.MOUSEBUTTONDOWN:
-        clickpos=event.pos
-        if returntomenubutton.collidepoint(clickpos):
-          self.screen==#main menu value
+      for event in pygame.event.get():
+        if event.type==pygame.KEYDOWN:
+          key=event.key
+        elif event.type==pygame.MOUSEBUTTONDOWN:
+          clickpos=event.pos
+          if returntomenubutton.collidepoint(clickpos):
+            self.screen==#main menu value
       
       if key==pygame.K_SPACE and not gamehasstarted: #using space to start game
         gamehasstarted=True
@@ -78,7 +80,7 @@ class Controller:
 
       #REDRAW
       pygame.display.blit(game1bg,self.size)
-      #must redraw character according to position
+      player_group.update()#redraw character
       #redraw foreground
       #if background is moving, redraw that too
       if not gamehasstarted:
@@ -86,7 +88,15 @@ class Controller:
 
   
   def gameoverloop(self):
-      #event loop
+    while self.screen==#some value:
+      #EVENT LOOP
+      for event in pygame.event.get():
+        if event.type==pygame.MOUSEBUTTONDOWN:
+          clickpos=event.pos
+          if returntomenu.collidepoint(clickpos):
+            self.screen=#mainmenu value
+          elif playagain.collidepoint(clickpos):
+            self.screen=#minigame 1 value
 
       #update data
 

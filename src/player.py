@@ -1,15 +1,27 @@
 import pygame
 
 class Player(pygame.sprite.Sprite):
-  def __init__(self,x,y,width,height,moveamount,color=(255,0,0)):
-    super().__init()
-    self.image=pygame.Surface([width,height])
-    self.image.fill(color)#making the player a blank square first,will change later
-    self.rect=self.image.getrect()
-    self.moveamount=moveamount
-    self.movex=0
-    self.frame=0
-  def control(self):
-    self.movex+=moveamount
+  def __init__(self,xpos,ypos,width,height):
+    super().__init__()
+    self.image=pygame.Surface([width,height]) 
+    self.image.fill((255,0,0))
+    self.rect=self.image.get_rect()
+    self.xmotion=0
+    self.ymotion=-10
+    self.rect.center=[xpos,ypos]
+    self.jumping=False
+  def control(self,x):
+    self.xmotion+=x
+  def jump(self):
+    if not self.jumping:
+      self.jumping=True
   def update(self):
-    ??
+    pygame.time.wait(10)
+    self.rect.x+=self.xmotion
+    if self.jumping:
+      self.rect.y+=self.ymotion
+      if self.ymotion<10:
+        self.ymotion+=1
+      else:
+        self.ymotion=-10
+        self.jumping=False

@@ -3,57 +3,77 @@
 #(or we could change it to running away from bees or something, since we don't know about the bear)
 #I'm outlining this as if we're going to do all of them, but I'm trying to keep our options open just in case
 #I'm willing to do a lot of the work for this if we have the time
+
+import pygame
+from player import Player
+from button import Button
+
 class Controller:
   
   def __init__(self):
     pygame.init()
     self.display=pygame.display.set_mode()
     self.dimensions=pygame.display.get_window_size()
-    self.screen=#some value that is going to represent the mainmenu loop. the value of this changes for different screens
-    #also, that^^ might be a bad way to do it. idk. will reevaluate later.
+    self.screen=0
     
-    self.mainmenubg
-    self.maingamebg
-    self.game1bg
-    self.game2bg
-    self.game3bg
-    self.youdiedbg
+    #self.mainmenubg
+    #self.maingamebg
+    #self.game1bg
+    #self.game2bg
+    #self.game3bg
+    #self.youdiedbg
     #backgrounds^^^
 
     
-  def mainloop(self): #idk if this is how im supposed to write this, this might be wrong but it's just supposed to check which loop is supposed to be running so it's not super important
+  def mainloop(self):
     running=True
     while running:
-      mainmenuloop() if self.screen==#value that represents main menu
-      maingameloop() if self.screen==#some value that represents main game
-      game1loop() if self.screen==#some value that represents minigame 1
-      game2loop() if self.screen==#value
-      game3loop() if self.screen==#value
-      gameoverloop() if self.screen==#value
-      pickminigameloop() if self.screen==#value
-      petloop() if self.screen==#value
+      if self.screen==0:
+        mainmenuloop()
+      elif self.screen==1:
+        game1loop()
+      elif self.screen==2:
+        game2loop()
+      elif self.screen==3:
+        game3loop()
+      elif self.screen==4:
+        maingameloop()
+      elif self.screen==5:
+        gameoverloop()
+      elif self.screen==6:
+        pickminigameloop()
+      elif self.screen==7:
+        petloop()
+      elif self.screen==8: #option to quit game will set self.screen to 8
+        running=False
   
   
   def mainmenuloop(self):
-    while self.screen==#above value
+    startbutton=Button(100,50,100,10)
+    minigamebutton=Button(100,100,100,10)
+    buttons=pygame.sprite.Group()
+    buttons.add(startbutton,minigamebutton)
+    while self.screen==0:
       #EVENT LOOP
       for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
           clickpos=event.pos
           if startbutton.collidepoint(clickpos):
-            self.screen=#some value that represents the main game
-          elif minigame.collidepoint(clickpos):
-            self.screen=#value that rep.s minigame selection menu
-          elif instructions.collidepoint(clickpos):
-            self.screen=#represents instructions menu
+            pygame.sprite.Group.empty(buttons)
+            self.screen=4
+          elif minigamebutton.collidepoint(clickpos):
+            pygame.sprite.Group.empty(buttons)
+            self.screen=7
+        elif event.type==pygame.KEYDOWN:
+          if event.key==pygame.K_q:
+            self.screen=8
+
       
       #UPDATE DATA (no data? I think?)
 
       #REDRAW
-      self.display.blit(self.mainmenubg,self.dimensions)
-      self.display.blit(#stuff for start button)
-      self.display.blit(#stuff for minigame selection button)
-      self.display.blit(#stuff for instructions button)
+      #self.display.blit(self.mainmenubg,self.dimensions)
+      buttons.draw(self.display)
       pygame.display.flip()
 
 
@@ -61,20 +81,14 @@ class Controller:
   def game1loop(self):
     gamehasstarted=False
     isjumping=False
-    while self.screen==#some value:
-      #EVENT LOOP
+    while self.screen==1:
       for event in pygame.event.get():
         if event.type==pygame.KEYDOWN:
-          key=event.key
+          if 
         elif event.type==pygame.MOUSEBUTTONDOWN:
           clickpos=event.pos
           if returntomenubutton.collidepoint(clickpos):
-            self.screen==#main menu value
-      
-      if key==pygame.K_SPACE and not gamehasstarted: #using space to start game
-        gamehasstarted=True
-      elif key==pygame.K_SPACE and not isjumping: #using space to jump
-        isjumping=True
+            self.screen==0
 
       #update data -- dunno what to do here yet
 

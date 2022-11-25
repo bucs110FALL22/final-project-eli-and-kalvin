@@ -1,20 +1,14 @@
-#I think we should code one minigame first, then see if we can add the rest, then if all goes well and we have time, implement the main idea
-#I think running away from the bear, geometry-dash style or maybe like temple-run style would work the best as a standalone game
-#(or we could change it to running away from bees or something, since we don't know about the bear)
-#I'm outlining this as if we're going to do all of them, but I'm trying to keep our options open just in case
-#I'm willing to do a lot of the work for this if we have the time
-
 import pygame
-from player import Player
-from button import Button
+from src.player import Player
+from src.block import Block
 
 class Controller:
   
   def __init__(self):
     pygame.init()
-    self.display=pygame.display.set_mode()
-    self.dimensions=pygame.display.get_window_size()
-    self.screen=0
+    self.display=pygame.display.set_mode((750,300))
+    self.displayx,self.displayy=pygame.display.get_window_size()
+    self.screen=1 #I'm working on game 1 rn, so setting it to this
     
     #self.mainmenubg
     #self.maingamebg
@@ -29,40 +23,36 @@ class Controller:
     running=True
     while running:
       if self.screen==0:
-        mainmenuloop()
+        self.mainmenuloop()
       elif self.screen==1:
-        game1loop()
-      elif self.screen==2:
-        game2loop()
-      elif self.screen==3:
-        game3loop()
-      elif self.screen==4:
-        maingameloop()
-      elif self.screen==5:
-        gameoverloop()
-      elif self.screen==6:
-        pickminigameloop()
-      elif self.screen==7:
-        petloop()
+        self.game1loop()
+      #elif self.screen==2:
+        #game2loop()
+      #elif self.screen==3:
+        #game3loop()
+  #    elif self.screen==4:
+  #      maingameloop()
+  #    elif self.screen==5:
+  #      gameoverloop()
+  #    elif self.screen==6:
+  #      pickminigameloop()
+  #    elif self.screen==7:
+  #      petloop()
       elif self.screen==8: #option to quit game will set self.screen to 8
         running=False
   
   
   def mainmenuloop(self):
-    startbutton=Button(100,50,100,10)
-    minigamebutton=Button(100,100,100,10)
-    buttons=pygame.sprite.Group()
-    buttons.add(startbutton,minigamebutton)
+    startbutton=pygame.rect(0,self.displayy/2,100,50)
+    minigamebutton=pygame.rect(self.displayx-100,self.displayy/2,100,10)
     while self.screen==0:
       #EVENT LOOP
       for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
           clickpos=event.pos
           if startbutton.collidepoint(clickpos):
-            pygame.sprite.Group.empty(buttons)
             self.screen=4
           elif minigamebutton.collidepoint(clickpos):
-            pygame.sprite.Group.empty(buttons)
             self.screen=7
         elif event.type==pygame.KEYDOWN:
           if event.key==pygame.K_q:
@@ -73,44 +63,73 @@ class Controller:
 
       #REDRAW
       #self.display.blit(self.mainmenubg,self.dimensions)
-      buttons.draw(self.display)
+      self.display.fill("white")
+      pygame.draw.rect(self.display,(0,0,0),startbutton)
+      pygame.draw.rect(self.display,(100,100,100),minigamebutton)
+      #replace these later^^
       pygame.display.flip()
 
 
         
   def game1loop(self):
-    gamehasstarted=False
-    isjumping=False
+    xloc=75
+    charwidth,charheight=(10,10)
+    platformwidth,platformheight=(100,5)
+    character=Player(xloc,self.displayy/2,charwidth,charheight)
+    block1=Block(self.displayx,250,platformwidth,platformheight)
+    block2=Block(self.displayx+100,200,platformwidth,platformheight)
+    block3=Block(self.displayx+200,150,platformwidth,platformheight)
+    block4=Block(self.displayx+300,100,platformwidth,platformheight)
+    ground=Block(self.displayx,self.displayy-5,self.displayx,5)
+    all_sprites=pygame.sprite.Group()
+    all_blocks=pygame.sprite.Group()
+    moveblocks=pygame.sprite.Group()
+    all_sprites.add(character,block1,block2,block3,block4,ground)
+    all_blocks.add(block1,block2,block3,block4,ground)
+    moveblocks.add(block1,block2,block3,block4)
+    #EVENT LOOP
     while self.screen==1:
       for event in pygame.event.get():
         if event.type==pygame.KEYDOWN:
-          if 
-        elif event.type==pygame.MOUSEBUTTONDOWN:
-          clickpos=event.pos
-          if returntomenubutton.collidepoint(clickpos):
-            self.screen==0
+          if event.key==pygame.K_SPACE:
+            character.jump()
+            print("jump!")
+          elif event.key==pygame.K_q:
+            self.screen=8
 
-      #update data -- dunno what to do here yet
+      #UPDATE DATA
+      charloc=character.gety()
+      block=pygame.sprite.spritecollideany(character,all_blocks)
+      if block:
+        blocky=block.getloc()[1]
+        character.stopfall(blocky)
+      else:
+        character.fall()
+      if charloc>self.displayy:
+        character.override(xloc,self.displayy-charheight)
+      block1.move(2)
+      block2.move(2)
+      block3.move(2)
+      block4.move(2)
 
       #REDRAW
-      pygame.display.blit(game1bg,self.size)
-      player_group.update()#redraw character
-      #redraw foreground
-      #if background is moving, redraw that too
-      if not gamehasstarted:
-        #display message "press space to start/jump"
+      self.display.fill("white")
+      all_sprites.draw(self.display)
+      character.update()
+      pygame.display.flip()
+      pygame.time.wait(10)
 
   
   def gameoverloop(self):
-    while self.screen==#some value:
+    while self.screen==5:
       #EVENT LOOP
       for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
           clickpos=event.pos
           if returntomenu.collidepoint(clickpos):
-            self.screen=#mainmenu value
+            self.screen=0
           elif playagain.collidepoint(clickpos):
-            self.screen=#minigame 1 value
+            self.screen=1
 
       #update data
 
@@ -119,35 +138,35 @@ class Controller:
 #necessary^^^
 #if we have time vvv
     
-  def maingameloop(self):
+  #def maingameloop(self):
       #event loop
 
       #update data
 
       #redraw
 
-  def pickminigameloop(self):
+  #def pickminigameloop(self):
       #event loop
 
       #update data
 
       #redraw
     
-  def game2loop(self):
+  #def game2loop(self):
       #event loop
 
       #update data
 
       #redraw
   
-  def game3loop(self):
+  #def game3loop(self):
       #event loop
 
       #update data
 
       #redraw
     
-  def petloop(self):
+  #def petloop(self):
       #event loop
 
       #update data

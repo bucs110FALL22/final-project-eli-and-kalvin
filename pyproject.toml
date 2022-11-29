@@ -1,14 +1,18 @@
 [tool.poetry]
-name = "repl_nix_final-project-eli-and-kalvin"
+name = "python-template"
 version = "0.1.0"
 description = ""
-authors = ["Replit user <<>>"]
+authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8.0,<3.9"
 pygame = "^2.1.2"
+requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
+debugpy = "^1.6.2"
+python-lsp-server = {extras = ["yapf", "rope", "pyflakes"], version = "^1.5.0"}
+toml = "^0.10.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -6,9 +6,20 @@ class Controller:
   
   def __init__(self):
     pygame.init()
-    self.display=pygame.display.set_mode((750,300))
-    self.displayx,self.displayy=pygame.display.get_window_size()
-    self.screen=1 #I'm working on game 1 rn, so setting it to this
+    # self.display=pygame.display.set_mode((750,300))
+    self.screen = pygame.display.set_mode()
+    size = pygame.display.get_window_size()
+    self.background_images = [
+            "assets/backgroundImage1.png",
+        ]
+    self.background = pygame.image.load(self.background_images[0])
+    self.background = pygame.transform.scale(self.background, size)
+    
+    self.screen.blit(self.background,(0,0))
+    pygame.display.update()
+
+    # self.displayx,self.displayy=pygame.display.get_window_size()
+    # self.screen=1 #I'm working on game 1 rn, so setting it to this
     
     #self.mainmenubg
     #self.maingamebg

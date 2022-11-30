@@ -1,13 +1,17 @@
 import pygame
 
 class Block(pygame.sprite.Sprite):
-  def __init__(self,x,y,width,height):
+  def __init__(self,x,y,width,height,ground=False):
     super().__init__()
-    self.image=pygame.Surface([width,height])
-    self.image.fill((0,0,255))
+    if not ground:
+      IMAGE=pygame.image.load('assets/game1images/block.png').convert_alpha()
+      self.image=IMAGE
+    else:
+      IMAGE=pygame.image.load('assets/game1images/groundblock.png').convert_alpha()
+      self.image=IMAGE
     self.rect=self.image.get_rect()
     self.rect.topright=[x,y]
-  def move(self,x):
-    self.rect.x-=x
   def getloc(self):
     return (self.rect.x,self.rect.y)
+  def update(self):
+    self.rect.x-=3

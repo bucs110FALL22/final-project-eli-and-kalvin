@@ -1,16 +1,19 @@
 import pygame
 
 class Player(pygame.sprite.Sprite):
-  def __init__(self,xpos,ypos,width,height):
+  def __init__(self,xpos,ypos):
     super().__init__()
-    self.image=pygame.Surface([width,height])
-    self.image.fill((255,0,0))
+    self.runframes=[]
+    for i in range (1,4):
+      self.runframes.append(pygame.image.load('assets/game1images/character_run'+str(i)+'.png').convert_alpha())
+    self.image=self.runframes[1]
     self.rect=self.image.get_rect()
     self.jumpmotion=-10
     self.fallmotion=0
     self.rect.center=[xpos,ypos]
     self.jumping=False
     self.falling=False
+    self.frame=0
   def jump(self):
     if not self.jumping and not self.falling:
       self.jumping=True
@@ -40,3 +43,14 @@ class Player(pygame.sprite.Sprite):
         self.fallmotion+=1
     else:
       self.rect.midbottom=[self.rect.center[0],self.platform]
+    if self.frame==30:
+      self.frame=0
+    if self.frame==0:
+      self.image=self.runframes[1]
+    elif self.frame==5:
+      self.image=self.runframes[0]
+    elif self.frame==15:
+      self.image=self.runframes[1]
+    elif self.frame==20:
+      self.image=self.runframes[2]
+    self.frame+=1

@@ -7,8 +7,8 @@ class Controller:
   
   def __init__(self):
     pygame.init()
-    #self.display=pygame.display.set_mode((500,250))
-    self.display = pygame.display.set_mode()
+    self.display=pygame.display.set_mode((500,250))
+    #self.display = pygame.display.set_mode()
     self.displayx,self.displayy=pygame.display.get_window_size() #replaced "size" with 2 variables for x-length and y-length bc I was using these variables elsewhere
     self.background_images = [
             "assets/backgroundImage1.png",
@@ -20,20 +20,20 @@ class Controller:
     pygame.display.update()
 
 
-    #self.screen=1 #self.screen keeps track of which screen/part of game is playing
+    self.screen=2 #self.screen keeps track of which screen/part of game is playing
 
 
     
   def mainloop(self):
     running=True
     while running:
-      pass
-      #if self.screen==0:
-        #self.mainmenuloop()
-      #elif self.screen==1:
-        #self.game1loop()
-  #    elif self.screen==2:
-  #      game2loop()
+      #pass
+      if self.screen==0:
+        self.mainmenuloop()
+      elif self.screen==1:
+        self.game1loop()
+      elif self.screen==2:
+        self.game2loop()
   #    elif self.screen==3:
   #      game3loop()
   #    elif self.screen==4:
@@ -44,8 +44,8 @@ class Controller:
   #      pickminigameloop()
   #    elif self.screen==7:
   #      petloop()
-      #elif self.screen==8: #option to quit game will set self.screen to 8
-        #running=False
+      elif self.screen==8: #option to quit game will set self.screen to 8
+        running=False
   
   
   def mainmenuloop(self):
@@ -122,7 +122,7 @@ class Controller:
             self.screen=8
 
       #UPDATE DATA
-      charloc=character.gety()
+      charloc=character.getloc()[1]
       platform=pygame.sprite.spritecollideany(character,surfaceblocks)
       death=pygame.sprite.spritecollideany(character,badblocks)
       if death:
@@ -133,7 +133,7 @@ class Controller:
       else:
         character.fall()
       if charloc>self.displayy: #if there's a glitch and the character's outside the screen, reset location
-        character.override(xloc,self.displayy-charheight)
+        character.override(xloc,0)
       moveblocks.update()
 
       #REDRAW
@@ -144,16 +144,16 @@ class Controller:
       pygame.time.wait(20) #this makes the jumping a lot smoother
 
   
-  def gameoverloop(self):
-    while self.screen==5:
+  #def gameoverloop(self):
+  #  while self.screen==5:
       #EVENT LOOP
-      for event in pygame.event.get():
-        if event.type==pygame.MOUSEBUTTONDOWN:
-          clickpos=event.pos
-          if returntomenu.collidepoint(clickpos):
-            self.screen=0
-          elif playagain.collidepoint(clickpos):
-            self.screen=1
+  #    for event in pygame.event.get():
+  #      if event.type==pygame.MOUSEBUTTONDOWN:
+  #        clickpos=event.pos
+  #        if returntomenu.collidepoint(clickpos):
+  #          self.screen=0
+  #        elif playagain.collidepoint(clickpos):
+  #          self.screen=1
 
       #update data
 
@@ -176,12 +176,47 @@ class Controller:
 
       #redraw
     
-  #def game2loop(self):
-      #event loop
+  def game2loop(self): #using this as a test for moving the character, currently
+    character=Player(self.displayx/2,50)
+    ground=Block(self.displayx,self.displayy-20,self.displayx,5,True)
+    all_sprites=pygame.sprite.Group()
+    surfaceblocks=pygame.sprite.Group()
+    all_sprites.add(character,ground)
+    surfaceblocks.add(ground)
+    while self.screen==2: 
+      for event in pygame.event.get():
+        if event.type==pygame.KEYDOWN:
+          if event.key==pygame.K_a:
+            character.control(-2)
+            print("character should be moving left")
+          elif event.key==pygame.K_d:
+            character.control(2)
+          elif event.key==pygame.K_SPACE:
+            character.jump()
+            print("character should be jumping")
+          elif event.key==pygame.K_q:
+            self.screen=8
+        elif event.type==pygame.KEYUP:
+          if event.key==pygame.K_a:
+            character.control(2)
+          elif event.key==pygame.K_d:
+            character.control(-2)
 
-      #update data
+      charloc=character.getloc()
+      platform=pygame.sprite.spritecollideany(character,surfaceblocks)
+      if platform:
+        platformy=platform.getloc()[1]
+        character.stopfall(platformy)
+      else:
+        character.fall()
+      if charloc[1]>self.displayy: #if there's a glitch and the character's outside the screen, reset location
+        character.override(charloc[0],0)
 
-      #redraw
+      self.display.blit(self.background,(0,0))
+      all_sprites.draw(self.display)
+      character.update()
+      pygame.display.flip()
+      pygame.time.wait(20)
   
   #def game3loop(self):
       #event loop
@@ -191,6 +226,7 @@ class Controller:
       #redraw
     
   #def petloop(self):
+    # i did some of this in the pokemon model. all that model does is it gets a sprite from the api.
       #event loop
 
       #update data

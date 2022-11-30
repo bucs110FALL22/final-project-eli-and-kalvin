@@ -12,8 +12,13 @@ class Player(pygame.sprite.Sprite):
     self.fallmotion=0
     self.rect.center=[xpos,ypos]
     self.jumping=False
-    self.falling=False
+    self.falling=True
+    self.running=False
     self.frame=0
+    self.xmotion=0
+  def control(self,x):
+    self.xmotion+=x
+    self.running=True
   def jump(self):
     if not self.jumping and not self.falling:
       self.jumping=True
@@ -27,9 +32,12 @@ class Player(pygame.sprite.Sprite):
   def override(self,x,y):
     self.rect.x=x
     self.rect.y=y
-  def gety(self):
-    return self.rect.y
+  def getloc(self):
+    return self.rect
   def update(self):
+    if self.xmotion==0:
+      self.running=False
+    
     if self.jumping:
       self.rect.y+=self.jumpmotion
       if self.jumpmotion<0:
@@ -43,14 +51,16 @@ class Player(pygame.sprite.Sprite):
         self.fallmotion+=1
     else:
       self.rect.midbottom=[self.rect.center[0],self.platform]
-    if self.frame==30:
-      self.frame=0
-    if self.frame==0:
-      self.image=self.runframes[1]
-    elif self.frame==5:
-      self.image=self.runframes[0]
-    elif self.frame==15:
-      self.image=self.runframes[1]
-    elif self.frame==20:
-      self.image=self.runframes[2]
+    self.rect.x+=self.xmotion
+    if self.running:
+      if self.frame==30:
+        self.frame=0
+      if self.frame==0:
+        self.image=self.runframes[1]
+      elif self.frame==5:
+        self.image=self.runframes[0]
+      elif self.frame==15:
+        self.image=self.runframes[1]
+      elif self.frame==20:
+        self.image=self.runframes[2]
     self.frame+=1

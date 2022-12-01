@@ -3,6 +3,7 @@ from src.player import Player
 from src.block import Block
 from src.deathblock import Deathblock
 
+
 class Controller:
   
   def __init__(self):
@@ -20,56 +21,55 @@ class Controller:
     pygame.display.update()
 
 
-    self.screen=2 #self.screen keeps track of which screen/part of game is playing
-
+    self.screen=0 #self.screen keeps track of which screen/part of game is playing (screen 1 is any game;self.game selects which game)
+    self.game=0 
 
     
   def mainloop(self):
     running=True
     while running:
-      #pass
       if self.screen==0:
         self.mainmenuloop()
-      elif self.screen==1:
+      elif self.screen==1 and self.game==1:
         self.game1loop()
-      elif self.screen==2:
+      elif self.screen==1 and self.game==2:
         self.game2loop()
-  #    elif self.screen==3:
-  #      game3loop()
+      elif self.screen==1 and self.game==3:
+        self.game3loop()
+      elif self.screen==2:
+        self.maingameloop()
+      elif self.screen==3:
+        self.gameoverloop()
   #    elif self.screen==4:
-  #      maingameloop()
-  #    elif self.screen==5:
-  #      gameoverloop()
-  #    elif self.screen==6:
   #      pickminigameloop()
-  #    elif self.screen==7:
-  #      petloop()
+  #    elif self.screen==5:
+  #      petloop() I will try to work on this. but don't expect much
+     
       elif self.screen==8: #option to quit game will set self.screen to 8
         running=False
   
   
   def mainmenuloop(self):
-    startbutton=pygame.Rect(0,self.displayy/2,100,50)
-    minigamebutton=pygame.Rect(self.displayx-100,self.displayy/2,100,10)
+    minigamebutton=pygame.Rect(self.displayx/2-50,self.displayy/2,100,50)
+    startbutton=pygame.Rect(self.displayx/2-50,self.displayy/2-75,100,50)
     while self.screen==0:
+      
       #EVENT LOOP
       for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
           clickpos=event.pos
+          print("click")
           if startbutton.collidepoint(clickpos):
-            self.screen=4
+            self.screen=2
           elif minigamebutton.collidepoint(clickpos):
             self.screen=7
         elif event.type==pygame.KEYDOWN:
           if event.key==pygame.K_q:
             self.screen=8
 
-      
-      #UPDATE DATA (no data? I think?)
+      #UPDATE DATA (n/a)
 
       #REDRAW
-      #self.display.blit(self.mainmenubg,self.dimensions)
-      self.display.fill("white")
       pygame.draw.rect(self.display,(0,0,0),startbutton)
       pygame.draw.rect(self.display,(100,100,100),minigamebutton)
       #replace these later^^
@@ -81,9 +81,10 @@ class Controller:
     xloc=75 #location of character on screen
     platformwidth,platformheight=(100,19)
     spawnheights=[210,165,120,210,165,165,165,230]
-    stumps=[(1000,210),(1250,165)]
+    #stumps=[(1000,210),(1250,165)]
     character=Player(xloc,self.displayy/2)
     i=0
+    finsh=False #see "finalblock" for context
     blocks=[]
     deathblocks=[] #"deathblocks" meaning anything that ends the game when the player collides w/ it
     for spawnheight in spawnheights:
@@ -92,13 +93,16 @@ class Controller:
       blocks.append(Block((self.displayx+add),spawnheight,platformwidth,platformheight))
       deathblocks.append(Deathblock(self.displayx+add-platformwidth,spawnheight+2,1,17))
     ground=Block(self.displayx,self.displayy-20,self.displayx,5,True)
+    add=(i+3)*125
+    finalblock=Block(self.displayx+add,self.displayy-20,self.displayx,5,True)
     water=Deathblock(self.displayx,self.displayy-5,self.displayx,5,2)
-    for stump in stumps:
-      deathblocks.append(Deathblock(stump[0],stump[1],10,10,1))
+    #for stump in stumps:
+      #deathblocks.append(Deathblock(stump[0],stump[1],10,10,1))
     all_sprites=pygame.sprite.Group()
     surfaceblocks=pygame.sprite.Group() #blocks the player can stand on
     badblocks=pygame.sprite.Group() #deathblocks
     moveblocks=pygame.sprite.Group() #blocks that move
+    lastblock=pygame.sprite.Group()
     for block in blocks:
       moveblocks.add(block)
       surfaceblocks.add(block)
@@ -107,34 +111,47 @@ class Controller:
       moveblocks.add(deathblock)
       badblocks.add(deathblock)
       all_sprites.add(deathblock)
-    all_sprites.add(character,ground,water)
+    all_sprites.add(character,ground,water,finalblock)
     badblocks.add(water)
-    surfaceblocks.add(ground)
+    surfaceblocks.add(ground,finalblock)
     moveblocks.add(ground)
+    lastblock.add(finalblock)
     
     #EVENT LOOP
-    while self.screen==1:
+    while self.screen==1 and self.game==1:
       for event in pygame.event.get():
         if event.type==pygame.KEYDOWN:
-          if event.key==pygame.K_SPACE or event.key==pygame.K_w:
+          if event.key==pygame.K_SPACE or event.key==pygame.K_w or event.key==pygame.K_UP:
             character.jump()
           elif event.key==pygame.K_q: #press Q to quit
             self.screen=8
 
       #UPDATE DATA
-      charloc=character.getloc()[1]
+      charloc=character.getloc()
       platform=pygame.sprite.spritecollideany(character,surfaceblocks)
       death=pygame.sprite.spritecollideany(character,badblocks)
+      finish=pygame.sprite.spritecollideany(character,lastblock)
       if death:
-        self.screen=8
+        self.screen=3
       elif platform:
         platformy=platform.getloc()[1]
         character.stopfall(platformy)
       else:
         character.fall()
-      if charloc>self.displayy: #if there's a glitch and the character's outside the screen, reset location
-        character.override(xloc,0)
+      if finish:
+        finsh=True
+      if charloc[0]>self.displayx-10: #"-10" to account for player width
+        self.screen=2
+      elif charloc[0]<0:
+        character.override(charloc[0]+5,charloc[1])
+      if charloc[1]>self.displayy:
+        character.override(charloc[0],0)
+      #^^if there's a glitch and the character's outside the screen, reset location
       moveblocks.update()
+      if finsh:
+        character.control(2)
+      else:
+        lastblock.update()
 
       #REDRAW
       self.display.blit(self.background,(0,0))
@@ -144,25 +161,42 @@ class Controller:
       pygame.time.wait(20) #this makes the jumping a lot smoother
 
   
-  #def gameoverloop(self):
-  #  while self.screen==5:
+  def gameoverloop(self):
+    while self.screen==3:
+      replaybutton=pygame.Rect(self.displayx/2-50,50,100,50)
+      menubutton=pygame.Rect(self.displayx/2-50,125,100,50)
+      quitbutton=pygame.Rect(self.displayx/2-50,250,100,50)
+    while self.screen==0:
+      
       #EVENT LOOP
-  #    for event in pygame.event.get():
-  #      if event.type==pygame.MOUSEBUTTONDOWN:
-  #        clickpos=event.pos
-  #        if returntomenu.collidepoint(clickpos):
-  #          self.screen=0
-  #        elif playagain.collidepoint(clickpos):
-  #          self.screen=1
+      for event in pygame.event.get():
+        if event.type==pygame.MOUSEBUTTONDOWN:
+          clickpos=event.pos
+          if menubutton.collidepoint(clickpos):
+            self.screen=0
+            self.game=0
+          elif replaybutton.collidepoint(clickpos):
+            self.screen=1
+          elif quitbutton.collidepoint(clickpos):
+            self.screen=8
+        elif event.type==pygame.KEYDOWN:
+          if event.key==pygame.K_q:
+            self.screen=8
 
-      #update data
+      #UPDATE DATA (n/a)
 
-      #redraw
+      #REDRAW
+      pygame.display.fill("white")
+      pygame.draw.rect(self.display,(0,0,0),startbutton)
+      pygame.draw.rect(self.display,(100,100,100),minigamebutton)
+      #replace these later^^
+      pygame.display.flip()
 
-#necessary^^^
-#if we have time vvv
+
     
-  #def maingameloop(self):
+  def game2loop(self):
+    print ("game 2wooo")
+    self.screen=2
       #event loop
 
       #update data
@@ -176,7 +210,7 @@ class Controller:
 
       #redraw
     
-  def game2loop(self): #using this as a test for moving the character, currently
+  def maingameloop(self):
     character=Player(self.displayx/2,50)
     ground=Block(self.displayx,self.displayy-20,self.displayx,5,True)
     all_sprites=pygame.sprite.Group()
@@ -184,22 +218,21 @@ class Controller:
     all_sprites.add(character,ground)
     surfaceblocks.add(ground)
     while self.screen==2: 
+      #EVENT LOOP
       for event in pygame.event.get():
         if event.type==pygame.KEYDOWN:
-          if event.key==pygame.K_a:
+          if event.key==pygame.K_a or event.key==pygame.K_LEFT:
             character.control(-2)
-            print("character should be moving left")
-          elif event.key==pygame.K_d:
+          elif event.key==pygame.K_d or event.key==pygame.K_RIGHT:
             character.control(2)
-          elif event.key==pygame.K_SPACE:
+          elif event.key==pygame.K_SPACE or event.key==pygame.K_w or event.key==pygame.K_UP:
             character.jump()
-            print("character should be jumping")
           elif event.key==pygame.K_q:
             self.screen=8
         elif event.type==pygame.KEYUP:
-          if event.key==pygame.K_a:
+          if event.key==pygame.K_a or event.key==pygame.K_LEFT:
             character.control(2)
-          elif event.key==pygame.K_d:
+          elif event.key==pygame.K_d or event.key==pygame.K_RIGHT:
             character.control(-2)
 
       charloc=character.getloc()
@@ -209,8 +242,14 @@ class Controller:
         character.stopfall(platformy)
       else:
         character.fall()
-      if charloc[1]>self.displayy: #if there's a glitch and the character's outside the screen, reset location
+      if charloc[0]>self.displayx-10: #"-10" to account for player width
+        self.game+=1
+        self.screen=1
+      elif charloc[0]<0:
+        character.override(charloc[0]+5,charloc[1])
+      if charloc[1]>self.displayy:
         character.override(charloc[0],0)
+      #^^if there's a glitch and the character's outside the screen, reset location
 
       self.display.blit(self.background,(0,0))
       all_sprites.draw(self.display)
@@ -232,3 +271,4 @@ class Controller:
       #update data
 
       #redraw
+  def petloop()

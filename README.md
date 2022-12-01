@@ -16,7 +16,7 @@ https://replit.com/join/wbpdwumwzr-kalvinweng1)
 
 ## Project Description
 
-<< Give an overview of your project >>
+Survive the walk through the nature preserve! While walking through the nature preserve, the player will have to play a series of minigames to survive. At the end of the game, there will be a surprise for the user!
 
 ***    
 

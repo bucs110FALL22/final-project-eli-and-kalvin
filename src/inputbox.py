@@ -1,7 +1,9 @@
 import pygame 
+from src.pokemon import Pokemon
+
 pygame.init()
 class InputBox:
-    def __init__(self, x, y, w, h, text=''):
+    def __init__(self, x=100, y=100, w=160, h=32, text=''):
         self.screen = pygame.display.set_mode((640, 480))  
         self.rect = pygame.Rect(x, y, w, h)
         self.colorOff = pygame.Color('lightskyblue3')
@@ -25,8 +27,8 @@ class InputBox:
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
+                    Pokemon().pokemonsprite(pokemonname=self.text)
                     print(self.text)
-                    # return self.text 
                     self.text = ''
                 elif event.key == pygame.K_BACKSPACE:
                     self.text = self.text[:-1]
@@ -44,22 +46,4 @@ class InputBox:
         screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)    
-    def inputtextrunner(self):
-        clock = pygame.time.Clock()
-        input_box1 = InputBox(100, 100, 140, 32)
-        input_box2 = InputBox(100, 300, 140, 32)
-        input_boxes = [input_box1, input_box2]
-        done = False
-        while not done:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    done = True
-                for box in input_boxes:
-                    box.handle_event(event)
-            for box in input_boxes:
-                box.update()
-            self.screen.fill((30, 30, 30))
-            for box in input_boxes:
-                box.draw(self.screen)
-            pygame.display.flip()
-            clock.tick(30)
+  

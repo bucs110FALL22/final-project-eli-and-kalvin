@@ -6,12 +6,13 @@ from urllib.request import urlopen
 
 class Pokemon:
   def __init__(self):
+    
     pygame.init()
     self.window = pygame.display.set_mode()
   def pokemonsprite(self, pokemonname='ditto'):
     link= f"https://pokeapi.co/api/v2/pokemon/{pokemonname.lower()}"
     r = requests.get(link)
-    while r.status_code != 200:
+    if r.status_code != 200:
       print("failed")
     else:
       rjson = r.json()

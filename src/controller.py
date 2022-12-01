@@ -54,7 +54,7 @@ class Controller:
   def mainmenuloop(self):
     minigamebutton = pygame.Rect(self.displayx / 2 - 50, self.displayy / 2,
                                  100, 50)
-    startbutton = pygame.Rect(self.displayx / 2 - 50, self.displayy / 2 - 75,
+    startbutton = pygame.Rect(self.displayx / 2 - 50, self.displayy / 2 - 65,
                               100, 50)
     while self.screen == 0:
 
@@ -74,9 +74,8 @@ class Controller:
       #UPDATE DATA (n/a)
 
       #REDRAW
-      pygame.draw.rect(self.display, (0, 0, 0), startbutton)
-      pygame.draw.rect(self.display, (100, 100, 100), minigamebutton)
-      #replace these later^^
+      self.display.blit(pygame.image.load("startbutton.png"),(self.displayx/2-50,self.displayy/2-65))
+      self.display.blit(pygame.image.load("minigamebutton.png"),(self.displayx/2-50,self.displayy/2))
       pygame.display.flip()
 
   def game1loop(self):
@@ -279,8 +278,7 @@ class Controller:
   def petloop(self):
     clock = pygame.time.Clock()
     input_box1 = InputBox(100, 100, 140, 32)
-    input_box2 = InputBox(100, 300, 140, 32)
-    input_boxes = [input_box1, input_box2]
+    input_boxes = [input_box1]
     done = False
     while not done:
       self.display.blit(self.background, (0, 0))

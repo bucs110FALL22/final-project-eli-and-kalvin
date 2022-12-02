@@ -14,8 +14,10 @@ class Controller:
     self.display = pygame.display.set_mode((500, 250))
     self.displayx, self.displayy= pygame.display.get_window_size()
     self.background_images = [
+      "assets/backgroundImage0.png",
       "assets/backgroundImage1.png",
       "assets/backgroundImage2.png",
+      "assets/backgroundImage3.png",
     ]
 
     self.font=pygame.font.Font(None,25)
@@ -66,13 +68,13 @@ class Controller:
       #UPDATE DATA (n/a)
 
       #REDRAW
-      self.background= pygame.image.load(self.background_images[1])
+      self.background= pygame.image.load(self.background_images[0])
       self.display.blit(self.background, (0, 0))
       self.display.blit(pygame.image.load("assets/startbutton.png"),(self.displayx/2-50,self.displayy/2-55))
       self.display.blit(pygame.image.load("assets/minigamebutton.png"),(self.displayx/2-50,self.displayy/2+10))
       pygame.display.flip()
 
-  def game1loop(self):
+  def game3loop(self):
     xloc = 75  #location of character on screen
     platformwidth, platformheight = (100, 19)
     spawnheights = [210, 165, 120, 210, 165, 165, 165, 230]
@@ -113,7 +115,7 @@ class Controller:
     lastblock.add(finalblock)
 
     #EVENT LOOP
-    while self.screen == 1 and self.game == 1:
+    while self.screen == 1 and self.game == 3:
       for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
           if event.key == pygame.K_SPACE or event.key == pygame.K_w or event.key == pygame.K_UP:
@@ -146,14 +148,20 @@ class Controller:
         msg=self.font.render("WIN!",False,(0,0,0))
         input_box1 = InputBox(100, 100, 140, 32)
         input_boxes = [input_box1]
+        for box in input_boxes:
+          box.handle_event(event)
+          box.update()
+          box.draw(self.display)
+        pygame.display.flip()
+        pygame.time.wait(15)
       else:
         lastblock.update()
         msg=self.font.render("Don't fall into the water!",False,(0,0,0))
       character.update()
 
       #REDRAW
-      self.background = pygame.image.load(self.background_images[0])
-      self.background = pygame.transform.scale(self.background,                   (self.displayx, self.displayy))
+      self.background = pygame.image.load(self.background_images[3])
+      self.background = pygame.transform.scale(self.background,                     (self.displayx, self.displayy))
       self.display.blit(self.background, (0, 0))
       self.display.blit(self.display,(0,0))
       self.display.blit(msg,(self.displayx/2-100,10))
@@ -167,9 +175,9 @@ class Controller:
       pygame.time.wait(15)
   
   def gameoverloop(self):
-    replaybutton = pygame.Rect(self.displayx / 2 - 50, 50, 100, 50)
-    menubutton = pygame.Rect(self.displayx / 2 - 50, 125, 100, 50)
-    quitbutton = pygame.Rect(self.displayx / 2 - 50, 250, 100, 50)
+    replaybutton=pygame.Rect(self.displayx/2-50, self.displayy/2-40,100,30)
+    menubutton=pygame.Rect(self.displayx/2-50, self.displayy/2,100,30)
+    quitbutton=pygame.Rect(self.displayx/2-50, self.displayy/2+40,100,30)
     while self.screen == 3:
 
       #EVENT LOOP
@@ -190,16 +198,22 @@ class Controller:
       #UPDATE DATA (n/a)
 
       #REDRAW
-      self.background = pygame.image.load(self.background_images[0])
-      self.background = pygame.transform.scale(self.background,                   (self.displayx, self.displayy))
+      if self.game==1:
+        self.background = pygame.image.load(self.background_images[1])
+      elif self.game==2:
+        self.background = pygame.image.load(self.background_images[2])
+      elif self.game==3:
+        self.background = pygame.image.load(self.background_images[3])
+        self.background = pygame.transform.scale(self.background,                   (self.displayx, self.displayy))
       self.display.blit(self.background, (0, 0))
       self.display.blit(self.display,(0,0))
-      pygame.draw.rect(self.display, (0, 0, 0), replaybutton)
-      pygame.draw.rect(self.display, (100, 100, 100), menubutton)
-      #replace these later^^
+      self.display.blit(self.display,(0,0))
+      self.display.blit(pygame.image.load("assets/replaybutton.png"),(self.displayx/2-50,self.displayy/2-40))
+      self.display.blit(pygame.image.load("assets/mainmenubutton.png"),(self.displayx/2-50,self.displayy/2))
+      self.display.blit(pygame.image.load("assets/quitbutton.png"),(self.displayx/2-50,self.displayy/2+40))
       pygame.display.flip()
 
-  def game2loop(self):
+  def game1loop(self):
     character = Player(self.displayx / 2, 50)
     ground = Block(self.displayx, self.displayy - 20, self.displayx, 5, True)
     i=0
@@ -234,7 +248,7 @@ class Controller:
     all_sprites.add(character,ground,lastacorn)
     surfaceblocks.add(ground)
     
-    while self.screen==1 and self.game==2:
+    while self.screen==1 and self.game==1:
       #EVENT LOOP
       for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -273,9 +287,9 @@ class Controller:
       else:
         character.fall()
       if not end:
-        msg=self.font.render("Avoid acorns!",False,(0,0,0))
+        msg=self.font.render("Avoid acorns!",False,(255,255,255))
       else:
-        msg=self.font.render("WIN!",False,(0,0,0))
+        msg=self.font.render("WIN!",False,(255,255,255))
         character.override(charloc[0]+5,charloc[1])
         if charloc[0] > self.displayx:
           self.screen=2
@@ -288,7 +302,7 @@ class Controller:
         character.override(charloc[0], 0)
       pygame.time.wait(10)
 
-      self.background = pygame.image.load(self.background_images[0])
+      self.background = pygame.image.load(self.background_images[1])
       self.background = pygame.transform.scale(self.background,(self.displayx, self.displayy))
       self.display.blit(self.background, (0, 0))
       self.display.blit(msg,(self.displayx/2-100,10))
@@ -297,9 +311,9 @@ class Controller:
       pygame.display.flip()
 
   def pickminigameloop(self):
-    game1button=pygame.Rect(self.displayx/2-50, self.displayy/2-20,100,30)
-    game2button=pygame.Rect(self.displayx/2-50, self.displayy/2+20,100,30)
-    game3button=pygame.Rect(self.displayx/2-50, self.displayy/2+60,100,30)
+    game1button=pygame.Rect(self.displayx/2-50, self.displayy/2-40,100,30)
+    game2button=pygame.Rect(self.displayx/2-50, self.displayy/2,100,30)
+    game3button=pygame.Rect(self.displayx/2-50, self.displayy/2+40,100,30)
     while self.screen == 4:
 
       #EVENT LOOP
@@ -322,11 +336,11 @@ class Controller:
       #UPDATE DATA (n/a)
 
       #REDRAW
-      self.background= pygame.image.load(self.background_images[1])
+      self.background= pygame.image.load(self.background_images[0])
       self.display.blit(self.background, (0, 0))
-      pygame.draw.rect(self.display,(0,0,0),game1button)
-      pygame.draw.rect(self.display,(0,0,0),game2button)
-      pygame.draw.rect(self.display,(0,0,0),game3button)
+      self.display.blit(pygame.image.load( "assets/game1button.png"),(self.displayx/2-50,self.displayy/2-40))
+      self.display.blit(pygame.image.load( "assets/game2button.png"),(self.displayx/2-50,self.displayy/2))
+      self.display.blit(pygame.image.load( "assets/game3button.png"),(self.displayx/2-50,self.displayy/2+40))
       pygame.display.flip()
 
   
@@ -373,8 +387,13 @@ class Controller:
         character.override(charloc[0], 0)
       #^^if there's a glitch and the character's outside the screen, reset location
 
-      self.background = pygame.image.load(self.background_images[0])
-      self.background = pygame.transform.scale(self.background,
+      if self.game==0:
+        self.background = pygame.image.load(self.background_images[1])
+      elif self.game==1:
+        self.background = pygame.image.load(self.background_images[2])
+      else:
+        self.background = pygame.image.load(self.background_images[3])
+        self.background = pygame.transform.scale(self.background,
                                              (self.displayx, self.displayy))
 
       self.display.blit(self.background, (0, 0))
@@ -383,7 +402,7 @@ class Controller:
       pygame.display.flip()
       pygame.time.wait(10)
       
-  def game3loop(self):
+  def game2loop(self):
     character = Player(self.displayx / 2, 50)
     ground = Block(self.displayx, self.displayy - 20, self.displayx, 5, True)
     all_sprites = pygame.sprite.Group()
@@ -402,7 +421,7 @@ class Controller:
     all_sprites.add(character,ground)
     playergroup.add(character)
     surfaceblocks.add(ground)
-    while self.screen==1 and self.game==3:
+    while self.screen==1 and self.game==2:
       #EVENT LOOP
       for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -416,7 +435,7 @@ class Controller:
           elif event.key == pygame.K_q:
             self.screen = 8
           elif event.key == pygame.K_r:
-            self.game=2
+            self.game=1
             self.screen=2
         elif event.type==pygame.KEYUP and keyupallow:
           if event.key == pygame.K_a or event.key == pygame.K_LEFT:
@@ -434,7 +453,6 @@ class Controller:
           f.fall()
         if pygame.sprite.spritecollideany( f,playergroup):
           count+=1
-          print(count)
           f.die()
 
       charloc = character.getloc()
@@ -454,29 +472,20 @@ class Controller:
       frogs.update()
 
       if count>5:
-        msg=self.font.render("WIN!",False,(0,0,0))
+        msg=self.font.render("WIN!",False,(255,255,255))
         character.override(charloc[0]+5,charloc[1])
         if charloc[0] > self.displayx:
           self.screen=2
       else:
-        msg=self.font.render("Catch the frogs! (R to restart)",False,(0,0,0))
+        msg=self.font.render("Catch the frogs! (R to restart)",False,(255,255,255))
       
-      self.background = pygame.image.load(self.background_images[0])
-      self.background = pygame.transform.scale(self.background,        (self.displayx, self.displayy))
+      self.background = pygame.image.load(self.background_images[2])
       self.display.blit(self.background, (0, 0))
-      self.display.blit(msg,(self.displayx/2-100,10))
+      self.display.blit(msg,(50,10))
       all_sprites.draw(self.display)
       character.update()
       pygame.display.flip()
       pygame.time.wait(10)
-
-  #def petloop(self):
-  # i did some of this in the pokemon model. all that model does is it gets a sprite from the api. thanks
-  #event loop
-
-  #update data
-
-  #redraw
 
   # def petloop(self):
   #   clock = pygame.time.Clock()

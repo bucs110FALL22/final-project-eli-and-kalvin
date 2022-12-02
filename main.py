@@ -1,5 +1,4 @@
 import pygame
-#import Background
 from src.controller import Controller
 
 def main():

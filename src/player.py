@@ -4,9 +4,10 @@ class Player(pygame.sprite.Sprite):
   def __init__(self,xpos,ypos):
     super().__init__()
     self.runframes=[]
-    for i in range (1,4):
-      self.runframes.append(pygame.image.load('assets/game1images/character_run'+str(i)+'.png').convert_alpha())
-    self.image=self.runframes[1]
+    #for i in range (1,4):
+      #self.runframes.append(pygame.image.load('character_run'+str(i)+'.png').convert_alpha())
+    #self.image=self.runframes[1]
+    self.image=pygame.image.load('assets/charedit.png').convert_alpha()
     self.rect=self.image.get_rect()
     self.jumpmotion=-10
     self.fallmotion=0
@@ -18,7 +19,7 @@ class Player(pygame.sprite.Sprite):
     self.xmotion=0
   def control(self,x):
     self.xmotion+=x
-    self.running=True
+    #self.running=True
   def jump(self):
     if not self.jumping and not self.falling:
       self.jumping=True
@@ -29,15 +30,18 @@ class Player(pygame.sprite.Sprite):
     self.falling=False
     self.fallmotion=0
     self.platform=y+1
-  def override(self,x,y):
-    self.rect.x=x
-    self.rect.y=y
+  def override(self,x,y,type=0):
+    if type==0:
+      self.rect.x=x
+      self.rect.y=y
+    elif type==1:
+      self.xmotion=x
   def getloc(self):
     return self.rect
   def update(self):
-    if self.xmotion==0:
-      self.running=False
-    
+    #if self.xmotion==0:
+    #  self.running=False
+
     if self.jumping:
       self.rect.y+=self.jumpmotion
       if self.jumpmotion<0:

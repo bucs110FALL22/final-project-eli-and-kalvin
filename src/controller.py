@@ -4,8 +4,10 @@ from src.player import Player
 from src.block import Block
 from src.deathblock import Deathblock
 from src.frog import Frog
-from src.inputbox import InputBox
+# from src.inputbox import InputBox
 from src.audio import Audio
+from src.pokemon import Pokemon
+import io
 
 class Controller:
 
@@ -27,7 +29,7 @@ class Controller:
   def mainloop(self):
     running = True
     while running:
-      Audio().audioplay()
+      # Audio().audioplay()
       if self.screen == 0:
         self.mainmenuloop()
       elif self.screen == 1 and self.game == 1:
@@ -45,6 +47,8 @@ class Controller:
         self.gameoverloop()
       elif self.screen==4:
         self.pickminigameloop()
+      elif self.screen==5:
+        self.petloop()
       elif self.screen == 8:
         running = False
 
@@ -76,7 +80,7 @@ class Controller:
 
   def game3loop(self):
     xloc = 75  #location of character on screen
-    platformwidth, platformheight = (100, 19)
+    platformwidth=100
     spawnheights = [210, 165, 120, 210, 165, 165, 165, 230]
     stumps=[(1250,165)]
     character = Player(xloc, self.displayy / 2)
@@ -87,11 +91,11 @@ class Controller:
     for spawnheight in spawnheights:
       i += 1
       add = i * 125
-      blocks.append(Block((self.displayx + add), spawnheight, platformwidth,platformheight))
+      blocks.append(Block((self.displayx + add), spawnheight))
       deathblocks.append(Deathblock(self.displayx + add-platformwidth,spawnheight+2,1,17))
-    ground=Block(self.displayx,self.displayy-20, self.displayx,5,True)
+    ground=Block(self.displayx,self.displayy-20,True)
     add=(i+3)*125
-    finalblock=Block(self.displayx+add, self.displayy-20,self.displayx,5,True)
+    finalblock=Block(self.displayx+add, self.displayy-20,True)
     water = Deathblock(self.displayx, self.displayy - 5, self.displayx, 5, 2)
     for stump in stumps:
       deathblocks.append(Deathblock(stump[0],stump[1],10,10,1))
@@ -138,22 +142,15 @@ class Controller:
       if finish:
         finsh = True
       if charloc[0] > self.displayx - 10:
-        self.screen = 2
+        self.screen = 5
       elif charloc[0] < 0:
         character.override(charloc[0] + 5, charloc[1])
       if charloc[1] > self.displayy:
         character.override(charloc[0], 0)
       moveblocks.update()
       if finsh:
+        character.override(charloc[0]+5,charloc[1])
         msg=self.font.render("WIN!",False,(0,0,0))
-        input_box1 = InputBox(100, 100, 140, 32)
-        input_boxes = [input_box1]
-        for box in input_boxes:
-          box.handle_event(event)
-          box.update()
-          box.draw(self.display)
-        pygame.display.flip()
-        pygame.time.wait(15)
       else:
         lastblock.update()
         msg=self.font.render("Don't fall into the water!",False,(0,0,0))
@@ -161,16 +158,11 @@ class Controller:
 
       #REDRAW
       self.background = pygame.image.load(self.background_images[3])
-      self.background = pygame.transform.scale(self.background,                     (self.displayx, self.displayy))
+      self.background = pygame.transform.scale(self.background,                   (self.displayx, self.displayy))
       self.display.blit(self.background, (0, 0))
       self.display.blit(self.display,(0,0))
       self.display.blit(msg,(self.displayx/2-100,10))
       all_sprites.draw(self.display)
-      if finsh:
-        for box in input_boxes:
-          box.handle_event(event)
-          box.update()
-          box.draw(self.display)
       pygame.display.flip()
       pygame.time.wait(15)
   
@@ -215,7 +207,7 @@ class Controller:
 
   def game1loop(self):
     character = Player(self.displayx / 2, 50)
-    ground = Block(self.displayx, self.displayy - 20, self.displayx, 5, True)
+    ground = Block(self.displayx, self.displayy - 20,True)
     i=0
     keyupallow=False
     all_sprites = pygame.sprite.Group()
@@ -327,8 +319,9 @@ class Controller:
             self.game=2
             self.screen = 1
           elif game3button.collidepoint(clickpos):
-            self.game=3
-            self.screen = 1
+            # self.game=3 
+            # self.screen = 1
+            self.screen = 5
         elif event.type == pygame.KEYDOWN:
           if event.key == pygame.K_q:
             self.screen = 8
@@ -346,7 +339,7 @@ class Controller:
   
   def maingameloop(self):
     character = Player(self.displayx / 2, 50)
-    ground = Block(self.displayx, self.displayy - 20, self.displayx, 5, True)
+    ground = Block(self.displayx, self.displayy - 20, True)
     all_sprites = pygame.sprite.Group()
     surfaceblocks = pygame.sprite.Group()
     all_sprites.add(character, ground)
@@ -400,11 +393,11 @@ class Controller:
       all_sprites.draw(self.display)
       character.update()
       pygame.display.flip()
-      pygame.time.wait(10)
+      pygame.time.wait(100)
       
   def game2loop(self):
     character = Player(self.displayx / 2, 50)
-    ground = Block(self.displayx, self.displayy - 20, self.displayx, 5, True)
+    ground = Block(self.displayx, self.displayy - 20, True)
     all_sprites = pygame.sprite.Group()
     surfaceblocks = pygame.sprite.Group()
     playergroup=pygame.sprite.Group()
@@ -487,21 +480,99 @@ class Controller:
       pygame.display.flip()
       pygame.time.wait(10)
 
-  # def petloop(self):
-  #   clock = pygame.time.Clock()
-  #   input_box1 = InputBox(100, 100, 140, 32)
-  #   input_boxes = [input_box1]
-  #   done = False
-  #   while not done:
-  #     self.display.blit(self.background, (0, 0))
-  #     for event in pygame.event.get():
-  #       if event.type == pygame.QUIT:
-  #         done = True
-  #       for box in input_boxes:
-  #         box.handle_event(event)
-  #     for box in input_boxes:
-  #       box.update()
-  #     for box in input_boxes:
-  #       box.draw(self.display)
-  #     pygame.display.flip()
-  #     clock.tick(30)
+
+  def petloop(self):
+    character = Player(self.displayx / 2, 50)
+    ground = Block(self.displayx, self.displayy - 20, True)
+    all_sprites = pygame.sprite.Group()
+    surfaceblocks = pygame.sprite.Group()
+    all_sprites.add(character, ground)
+    surfaceblocks.add(ground)
+    keyupallow=False
+    done = False
+    colorOff = pygame.Color('lightskyblue3')
+    colorOn = pygame.Color('dodgerblue2')
+    font = pygame.font.Font(None, 32)
+    color = colorOff
+    text = ''
+    txt_surface = font.render(text, True, color)
+    active = False
+    image_str =''
+    while self.screen == 5:
+  #EVENT LOOP
+      rect = pygame.Rect(100, 100, 160, 32)
+      # pygame.draw.rect(self.display, color, rect, 2)
+      for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+          keyupallow=True
+          # if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+          #   character.control(-2)
+          # elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+          #   character.control(2)
+          # elif event.key == pygame.K_SPACE or event.key == pygame.K_w or event.key == pygame.K_UP:
+          #   character.jump()
+          # elif event.key == pygame.K_q:
+          #   self.screen = 8
+          if event.key == pygame.K_LEFT:
+            character.control(-2)
+          elif event.key == pygame.K_RIGHT:
+            character.control(2)
+          elif event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+            character.jump()
+          elif event.key == pygame.K_q:
+            self.screen = 8
+          elif active: 
+            if event.key == pygame.K_RETURN:
+              print(text)
+              image_str = Pokemon().pokemonsprite(pokemonname=text)
+              print(text)
+              text =''
+              active = True
+            elif event.key == pygame.K_BACKSPACE:
+              text = text[:-1]
+              pygame.display.update()
+            else:
+              text += event.unicode
+              txt_surface = font.render(text, True, color)
+        elif event.type==pygame.KEYUP and keyupallow:
+          if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+            character.control(2)
+          elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+            character.control(-2)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if rect.collidepoint(event.pos):
+              active = not active
+            else:
+              active = False
+            color = colorOn if active else colorOff
+
+      charloc = character.getloc()
+      platform = pygame.sprite.spritecollideany(character, surfaceblocks)
+      if platform:
+        platformy = platform.getloc()[1]
+        character.stopfall(platformy)
+      else:
+        character.fall()
+      if charloc[0] > self.displayx - 10:  #"-10" to account for player width
+        self.game = 0
+        self.screen = 0
+      elif charloc[0] < 0:
+        character.override(charloc[0] + 5, charloc[1])
+      if charloc[1] > self.displayy:
+        character.override(charloc[0], 0)
+      #^^if there's a glitch and the character's outside the screen, reset locatio
+      width = max(200, txt_surface.get_width()+10)
+      rect.w = width
+      
+      self.background = pygame.image.load(self.background_images[3])
+      self.background = pygame.transform.scale(self.background,
+                                             (self.displayx, self.displayy))
+
+      self.display.blit(self.background, (0, 0))
+      self.display.blit(txt_surface, (rect.x+5, rect.y+5))
+      all_sprites.draw(self.display)
+      character.update()
+      rect = pygame.Rect(100,100,160,32)
+      pygame.draw.rect(self.display, color, rect, 2) 
+      pygame.display.flip()
+      pygame.time.wait(10)

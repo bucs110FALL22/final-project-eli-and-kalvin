@@ -20,7 +20,9 @@ class Deathblock(pygame.sprite.Sprite):
       self.rect.topright=[x,y]
     elif type==3: #acorn
       self.image=pygame.Surface([width,height])
-      self.image.fill((122,84,68))
+      # I changed the color to white. Easier to see. feel free to change it back
+      # self.image.fill((122,84,68))
+      self.image.fill((255,255,255))
       self.rect=self.image.get_rect()
       self.rect.topright=[x,y]
     self.type=type
@@ -38,3 +40,4 @@ class Deathblock(pygame.sprite.Sprite):
         self.alternate=False
       else:
         self.rect.y+=1
+        

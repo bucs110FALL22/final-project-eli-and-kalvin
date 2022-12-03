@@ -1,7 +1,7 @@
 import pygame
 
 class Block(pygame.sprite.Sprite):
-  def __init__(self,x,y,width,height,ground=False):
+  def __init__(self,x,y,ground=False):
     super().__init__()
     if not ground:
       IMAGE=pygame.image.load('assets/block.png').convert_alpha()

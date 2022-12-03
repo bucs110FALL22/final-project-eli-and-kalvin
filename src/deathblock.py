@@ -1,6 +1,7 @@
 import pygame
 
 class Deathblock(pygame.sprite.Sprite):
+  # All the objects in the game that will cause the game to end/player dies. Basic data for each object/deatblock 
   def __init__(self,x,y,width,height,type=0):
     super().__init__()
     if type==0:
@@ -28,11 +29,14 @@ class Deathblock(pygame.sprite.Sprite):
     self.type=type
     self.alternate=False
   def getloc(self):
+    # Returns the location
     return (self.rect.x,self.rect.y)
   def die(self):
+    # Kills the player when deathblock comes in contact with player
     self.rect.y+=100
     self.kill()
   def update(self):
+    # Updates 
     if self.type<3:
       self.rect.x-=3
     elif self.type==3:

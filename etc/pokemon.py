@@ -7,7 +7,8 @@ class Pokemon:
     pygame.init()
     self.window = pygame.display.set_mode()
     self.pokemonfile = []
-  def pokemonsprite(self, pokemonname='ditto'): 
+  def pokemonsprite(self, pokemonname='ditto'):
+    # Search the name of the pokemon through the api and returns the sprite url
     link= f"https://pokeapi.co/api/v2/pokemon/{pokemonname.lower()}"
     r = requests.get(link)
     if r.status_code != 200:

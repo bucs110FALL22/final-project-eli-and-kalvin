@@ -16,6 +16,7 @@ class Frog(pygame.sprite.Sprite):
     if not self.falling and not self.jumping:
       self.falling=True
   def stopfall(self,y):
+    # Stops frog objects from falling
     self.falling=False
     self.fallmotion=0
     self.platform=y+1
@@ -23,6 +24,7 @@ class Frog(pygame.sprite.Sprite):
     self.rect.y+=100
     self.kill()
   def getloc(self):
+    # Returns the location
     return self.rect
   def override(self,x,y):
     self.rect.x=x

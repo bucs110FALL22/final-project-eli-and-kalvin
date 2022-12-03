@@ -6,8 +6,7 @@
 ### [Assignment Description](https://docs.google.com/document/d/1H4R6yLL7som1lglyXWZ04RvTp_RvRFCCBn6sqv-82ps/edit?usp=sharing)
 https://replit.com/join/wbpdwumwzr-kalvinweng1)
 
-
-https://jamboard.google.com/d/1FnbirFeLqDNUrMsNV_nTlI8YGqxwCTqWraLUG-juG9c/viewer?f=0
+https://docs.google.com/presentation/d/18wi9WF98YS5EY8aGPRmuONaxwIT1Ar-3Pu5XdBIfq80/edit?usp=sharing
 
 ### Team: Eli and Kalvin
 
@@ -15,14 +14,14 @@ https://jamboard.google.com/d/1FnbirFeLqDNUrMsNV_nTlI8YGqxwCTqWraLUG-juG9c/viewe
 
 ## Project Description
 
-Survive the walk through the nature preserve! While walking through the nature preserve, the player will have to play a series of minigames to survive. At the end of each game, there will be a surprise for the user!
+Survive the walk through the nature preserve! While walking through the nature preserve, the player will have to play a series of minigames to survive.
 
 ***    
 
 ## User Interface Design
 
 - **Initial Concept**
-  - << A wireframe or drawing of the user interface concept along with a short description of the interface. You should have one for each screen in your program. For example, if your program has a start screen, game screen, and game over screen, you should include a wireframe / screenshot / drawing of each one and a short description of the components. >>
+  - https://jamboard.google.com/d/1FnbirFeLqDNUrMsNV_nTlI8YGqxwCTqWraLUG-juG9c/viewer?f=0
     
     
 - **Final GUI**
@@ -37,11 +36,11 @@ Survive the walk through the nature preserve! While walking through the nature p
   -https://www.dataquest.io/blog/python-api-tutorial/
   - used to import files or datas from the web to help aid in adding pictures to the game
 - import pygame -https://www.pygame.org/docs/
-  - Allows the cration of sprites and other functions that are helpful to create a game.
+  - Allows the creation of sprites and other functions that are helpful to create a game. 
   
 ============================
 * Class Interface Design
-    * << A simple drawing that shows the class relationships in your code (see below for an example). This does not need to be overly detailed, but should show how your code fits into the Model/View/Controller paradigm. >>
+    * (In slides presentation)
         * ![class diagram](assets/class_diagram.jpg)
 ================================================
 ========================================
@@ -50,6 +49,7 @@ Survive the walk through the nature preserve! While walking through the nature p
   * Block - this class is used to create surfaces the player can stand on, using x and y position. The block can move or return its location.
   * Deathblock - these sprites end the game when the player collides with them. They behave differently depending on type, and can fall, move, die, or return location
   * Frog - these sprites move around the screen much like the Player sprite does, and can also jump, fall, die, and return location.
+  * Audio - helps retrieve the audio file and play the audio file
 ## Project Structure and File List
 
 The Project is broken down into the following file structure:
@@ -61,9 +61,7 @@ The Project is broken down into the following file structure:
     * controller.py
     * deathblock.py
     * frog.py
-    * inputbox.py
     * player.py
-    * pokemon.py
 * assets
     * backgroundImage0.png
     * backgroundImage1.png
@@ -92,12 +90,13 @@ The Project is broken down into the following file structure:
 ## Tasks and Responsibilities 
 
    * Kalvin - worked on pokemon pets, added music
-   * Eli - worked on art/visual components
+   * Eli - worked on art/visual components, and the games
    * Most of the game was made collaboratively
 
 ## Testing
 
 * Tested each game, then added the next one.
+* Debugg the codes first and then added new game into the controller.
 
 ## ATP
 
@@ -106,7 +105,7 @@ The Project is broken down into the following file structure:
 |  1                   | Click on Shell and enter "python3 main.py"  |Pygame window opens and program begins to run. |
 |  2                   | click "start" button   | The screen changes to a new background, and a character and the ground appears.      |
 |  3                   | push the 'd' key continuously  | The character moves to the right, and once it hits the right side of the screen, a message appears saying, "Avoid acorns!".      |
-|  4                   | push the 'w', 'a', or 'd' keys | The character moves or jumps around the screen. When colliding with one of the brown blocks, a screen will appear with three buttons reading "Replay," "Main Menu," and "Quit."     |
+|  4                   | push the 'w', 'a', or 'd' keys or the arrow keys | The character moves or jumps around the screen. When colliding with one of the brown blocks, a screen will appear with three buttons reading "Replay," "Main Menu," and "Quit."     |
 |  5                   | click the "Main Menu" button   | The screen changes to a new background, with two buttons reading "Start" and "Select Minigame"      |
 |  6                   | click the "Select Minigame" button   | The buttons change to three buttons reading "1," "2," and "3."      |
 |  7                   | click the "2" button   | The screen changes to a new background, and a character and the ground appears.      |

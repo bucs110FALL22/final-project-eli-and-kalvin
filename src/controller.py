@@ -5,11 +5,17 @@ from src.block import Block
 from src.deathblock import Deathblock
 from src.frog import Frog
 from src.audio import Audio
+from src.pokemon import Pokemon
 import io
 
 class Controller:
 
   def __init__(self):
+    '''
+    Initializes pygame, stores background png files, creates font, and creates self.game and self.screen variables to store what game is being played.
+    args: self
+    returns: None
+    '''
     pygame.init()
     self.display = pygame.display.set_mode((500, 250))
     self.displayx, self.displayy= pygame.display.get_window_size()
@@ -19,13 +25,16 @@ class Controller:
       "assets/backgroundImage2.png",
       "assets/backgroundImage3.png",
     ]
-
     self.font=pygame.font.Font(None,25)
     self.screen = 0
     self.game = 0
 
   def mainloop(self):
-    # Main loop which help redirect the screen to other parts of the game. In other words it's like the controller of the screens.
+    '''
+    Keeps track of what game is being played, and whether the program is running.
+    args: self
+    returns: None
+    '''
     running = True
     while running:
       Audio().audioplay()
@@ -36,9 +45,7 @@ class Controller:
       elif self.screen == 1 and self.game == 2:
         self.game2loop()
       elif self.screen == 1 and self.game == 3:
-        
         self.game3loop()
-        
       elif self.screen == 1 and self.game == 4:
         self.game=0
         self.screen=0
@@ -48,11 +55,18 @@ class Controller:
         self.gameoverloop()
       elif self.screen==4:
         self.pickminigameloop()
+      elif self.screen==5:
+        self.petloop()
       elif self.screen == 8:
         running = False
 
   def mainmenuloop(self):
-    # This method is just the title page where the user can select which minigame to play or play the general game.
+    '''
+    Main title screen where the user is allowed to choose between running the game chronologically or choosing a minigame to start from. It must contain more than 10 lines of code, in order to respond to events.
+    args: self
+    returns: None
+    '''
+    
     minigamebutton = pygame.Rect(self.displayx / 2 - 50, self.displayy/2+10,100,50)
     startbutton = pygame.Rect(self.displayx / 2 - 50, self.displayy/2-55,100,50)
     while self.screen == 0:
@@ -69,8 +83,6 @@ class Controller:
           if event.key == pygame.K_q:
             self.screen = 8
 
-      #UPDATE DATA (n/a)
-
       #REDRAW
       self.background= pygame.image.load(self.background_images[0])
       self.display.blit(self.background, (0, 0))
@@ -79,8 +91,12 @@ class Controller:
       pygame.display.flip()
 
   def game3loop(self):
-    # The third minigame or the last game in the general loop. User music avoid obstacles and not fall off or touch deathblocks.
-    xloc = 75  #location of character on screen
+    '''
+    The third game, where the player must avoid crashing into blocks or falling into the water. It must contain more than 10 lines of code, since it creates several sprites and has to keep track of all collisions and interactions between them.
+    args: self
+    returns: None
+    '''
+    xloc = 75
     platformwidth=100
     spawnheights = [210, 165, 120, 210, 165, 165, 165, 230]
     stumps=[(1250,165)]
@@ -144,7 +160,7 @@ class Controller:
         finsh = True
       if charloc[0] > self.displayx - 10:
         self.game=0
-        self.screen = 0
+        self.screen = 5
         
       elif charloc[0] < 0:
         character.override(charloc[0] + 5, charloc[1])
@@ -170,7 +186,11 @@ class Controller:
       pygame.time.wait(15)
   
   def gameoverloop(self):
-    # Display for the game over page. User can select an option to go back to the mainmenu, try again or quit the game.
+    '''
+    A screen that is displayed when the user dies, giving the option to quit the game, restart it, or return to the main menu. It must contain more than 10 lines of code, in order to respond to events.
+    args: self
+    returns: None
+    '''
     replaybutton=pygame.Rect(self.displayx/2-50, self.displayy/2-40,100,30)
     menubutton=pygame.Rect(self.displayx/2-50, self.displayy/2,100,30)
     quitbutton=pygame.Rect(self.displayx/2-50, self.displayy/2+40,100,30)
@@ -191,8 +211,6 @@ class Controller:
           if event.key == pygame.K_q:
             self.screen = 8
 
-      #UPDATE DATA (n/a)
-
       #REDRAW
       if self.game==1:
         self.background = pygame.image.load(self.background_images[1])
@@ -210,6 +228,11 @@ class Controller:
       pygame.display.flip()
 
   def game1loop(self):
+    '''
+    The first game, where the player must avoid acorns. It must contain more than 10 lines of code, since it creates several sprites and has to keep track of all collisions and interactions between them.
+    args: self
+    returns: None
+    '''
     character = Player(self.displayx / 2, 50)
     ground = Block(self.displayx, self.displayy - 20,True)
     i=0
@@ -307,7 +330,11 @@ class Controller:
       pygame.display.flip()
 
   def pickminigameloop(self):
-    # Lets user slect which minigame to play. Selecting the first option brings user to the first game(avoid acorn/blocks) falling. Selecting the second brings it to the second game. etc.
+    '''
+    A screen that displays three buttons, giving the user the options of playing game 1, 2, or 3. It must contain more than 10 lines of code, in order to respond to events.
+    args: self
+    returns: None
+    '''
     game1button=pygame.Rect(self.displayx/2-50, self.displayy/2-40,100,30)
     game2button=pygame.Rect(self.displayx/2-50, self.displayy/2,100,30)
     game3button=pygame.Rect(self.displayx/2-50, self.displayy/2+40,100,30)
@@ -343,7 +370,11 @@ class Controller:
 
   
   def maingameloop(self):
-    # Main game loop. User undergo a surival in the woods and plays through all three minigame. 
+    '''
+    A screen that is displayed between games, when the character is walking through the woods. It must contain more than 10 lines of code, in order to respond to events and control the player sprite.
+    args: self
+    returns: None
+    '''
     character = Player(self.displayx / 2, 50)
     ground = Block(self.displayx, self.displayy - 20, True)
     all_sprites = pygame.sprite.Group()
@@ -402,7 +433,11 @@ class Controller:
       pygame.time.wait(100)
       
   def game2loop(self):
-    # Second game loop. This is the catch the frog game loop.
+    '''
+    The second game, where the player must catch all of the frogs before they disappear. It must contain more than 10 lines of code, since it creates several sprites and has to keep track of all collisions and interactions between them.
+    args: self
+    returns: None
+    '''
     character = Player(self.displayx / 2, 50)
     ground = Block(self.displayx, self.displayy - 20, True)
     all_sprites = pygame.sprite.Group()
@@ -487,4 +522,77 @@ class Controller:
       pygame.display.flip()
       pygame.time.wait(10)
 
-  
+  def petloop(self):
+    '''
+    Screen where the user types in the name of a pokemon and they will appear on the screen. Input box will switch color when clicked. It contains then 10 lines of code because the method is managing both the pokemon and input box.
+    args: self
+    returns: None
+    '''
+    clock = pygame.time.Clock()
+    input_box1 = (100, 100, 140, 32)
+    done = False
+    self.display.blit(self.background, (0,0))
+    colorOff = pygame.Color('lightskyblue3')
+    colorOn = pygame.Color('dodgerblue2')
+    font = pygame.font.Font(None, 32)
+    color = colorOff
+    text = ''
+    txt_surface = font.render(text, True, 'black')
+    active = False
+    image_str = []
+    appear = False
+    while self.screen==5:
+      # Loop for both the textbox and the api
+      displacement = 0
+      while not done:
+          rect = pygame.Rect(input_box1)
+          pygame.draw.rect(self.display, color, rect) 
+          for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+              if rect.collidepoint(event.pos):
+                  active = not active
+              else:
+                  active = False
+              color = colorOn if active else colorOff
+            if event.type == pygame.KEYDOWN:
+                if active: 
+                    if event.key == pygame.K_RETURN:
+                        if Pokemon().pokemonsprite(pokemonname=text) == None:
+                          text= ''
+                          self.display.blit(self.background, (0,0))
+                          active = False
+                          done = True
+                          appear = True
+                        else:
+                          image_str.append(Pokemon().pokemonsprite(pokemonname=text))
+                          text =''
+                          txt_surface = font.render(text, True, color) 
+                          active = False
+                          done = True
+                          appear = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        text = text[:-1]
+                    else:
+                        text += event.unicode
+            txt_surface = font.render(text, True, 'black')
+            self.display.blit(txt_surface, (rect.x+5, rect.y+5))
+            width = max(200, txt_surface.get_width()+10)
+            rect.w = width
+            pygame.display.flip()
+            clock.tick(60)
+      print(displacement)
+      self.display.blit(self.background, (0,0))
+      while appear:
+        for i in image_str:
+          image_file = io.BytesIO(i)
+          image = pygame.image.load(image_file)
+          self.display.blit(image, (displacement,self.displayy-25))
+          print(displacement, self.displayy-25)
+          pygame.display.update()
+          displacement += 100
+          done = False
+          active = True
+          appear = False
+        if displacement >= self.displayx:
+          self.screen=0
+    

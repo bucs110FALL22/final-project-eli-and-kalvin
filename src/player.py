@@ -2,8 +2,15 @@ import pygame
 
 class Player(pygame.sprite.Sprite):
   def __init__(self,xpos,ypos):
+    '''
+    Creates a player sprite, its appearnance, its rect, and the variables to control its movement
+    args:
+      self
+      xpos: int
+      ypos: int
+    returns: None
+    '''
     super().__init__()
-    self.runframes=[]
     self.image=pygame.image.load('assets/charedit.png').convert_alpha()
     self.rect=self.image.get_rect()
     self.jumpmotion=-10
@@ -11,37 +18,73 @@ class Player(pygame.sprite.Sprite):
     self.rect.center=[xpos,ypos]
     self.jumping=False
     self.falling=True
-    self.running=False
     self.frame=0
     self.xmotion=0
   def control(self,x):
-    # Controls movement  left and right of the screen(or on the x-axis)
+    '''
+    Moves the player.
+    args:
+      self
+      x: int
+    returns: None
+    '''
     self.xmotion+=x
   def jump(self):
-    # Moves the player down in y-axis  or up in screento mimick jumping
+    '''
+    If the player is not falling and not already jumping, starts its jump movement.
+    args: self
+    returns: None
+    '''
     if not self.jumping and not self.falling:
       self.jumping=True
   def fall(self):
-    # Moves the user up in y-axis or down the screen
+    '''
+    Begins the player's descent, as long as the player is not already jumpig or falling.
+    args: self
+    returns: None
+    '''
     if not self.falling and not self.jumping:
       self.falling=True
   def stopfall(self,y):
-    # Ends the movement on the y-axis or stop  the falling actions
+    '''
+    Ends the player's descent, and keeps track of what platform it has landed on using its y-coordinate.
+    args:
+      self
+      y: int
+    returns: None
+    '''
     self.falling=False
     self.fallmotion=0
     self.platform=y+1
   def override(self,x,y,type=0):
-    # Places the player infront
+    '''
+    Sets the player to a different location, or stops its movement.
+    args:
+      self
+      x: int
+      y: int
+      type: int
+    returns: None
+    '''
     if type==0:
       self.rect.x=x
       self.rect.y=y
     elif type==1:
       self.xmotion=x
   def getloc(self):
-    # Returns the location
+    '''
+    Returns the character's location as a tuple.
+    args: self
+    returns:
+      self.rect: tuple (int,int)
+    '''
     return self.rect
   def update(self):
-    # Updates the player 
+    '''
+    Updates the player's position based on its movement. Must be more than 10 lines of code to keep track of all movements, not only including falling, jumping, and moving left or right, but also the speed at which the falling and jumping occurs.
+    args: self
+    returns: None
+    ''' 
     if self.jumping:
       self.rect.y+=self.jumpmotion
       if self.jumpmotion<0:
@@ -56,15 +99,3 @@ class Player(pygame.sprite.Sprite):
     else:
       self.rect.midbottom=[self.rect.center[0],self.platform]
     self.rect.x+=self.xmotion
-    if self.running:
-      if self.frame==30:
-        self.frame=0
-      if self.frame==0:
-        self.image=self.runframes[1]
-      elif self.frame==5:
-        self.image=self.runframes[0]
-      elif self.frame==15:
-        self.image=self.runframes[1]
-      elif self.frame==20:
-        self.image=self.runframes[2]
-    self.frame+=1

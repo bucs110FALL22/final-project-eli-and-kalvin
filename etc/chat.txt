@@ -1,3 +1,84 @@
+def petloop(self):
+    # screen = pygame.display.set_mode((640, 280)) 
+    screen = pygame.display.set_mode() 
+    clock = pygame.time.Clock()
+    input_box1 = (100, 100, 140, 32)
+    done = False
+    # file ='assets/backgroundImage3.png'
+    # screen.blit(pygame.image.load(file), (0,0))
+    screen.blit(self.background, (0,0))
+    # rect = pygame.Rect(input_box1)
+    colorOff = pygame.Color('lightskyblue3')
+    colorOn = pygame.Color('dodgerblue2')
+    font = pygame.font.Font(None, 32)
+    color = colorOff
+    text = ''
+    txt_surface = font.render(text, True, 'black')
+    active = False
+    image_str = []
+    appear = True
+    super = True
+    while super:
+      while not done:
+          # screen.fill('white'
+          rect = pygame.Rect(input_box1)
+          pygame.draw.rect(self.display, color, rect, 2) 
+          for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+              if rect.collidepoint(event.pos):
+                  active = not active
+              else:
+                  active = False
+              color = colorOn if active else colorOff
+            if event.type == pygame.KEYDOWN:
+                if active: 
+                    if event.key == pygame.K_RETURN:
+                        image_str.append( Pokemon().pokemonsprite(pokemonname=text))
+                        text =''
+                        txt_surface = font.render(text, True, color)
+                        active = False
+                        done = True
+                        appear = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        text = text[:-1]
+                        # txt_surface = font.render(text, True, 'black')
+                        # pygame.display.update()
+                        # screen.blit(txt_surface, (rect.x+5, rect.y+5))
+                    else:
+                        text += event.unicode
+                    txt_surface = font.render(text, True, 'black')
+            width = max(200, txt_surface.get_width()+10)
+            rect.w = width
+            screen.blit(txt_surface, (rect.x+5, rect.y+5))
+            # pygame.draw.rect(screen, color, rect, 2) 
+            pygame.display.flip()
+            clock.tick(30)
+      displacement = 0
+      screen.blit(self.background, (0,0))
+      screen.blit(self.background, (0,0))
+      while appear:
+        for i in image_str:
+          image_file = io.BytesIO(i)
+          print(image_file)
+          image = pygame.image.load(image_file)
+          print(image)
+          screen.blit(image, (displacement,self.displayy-100))
+          print(displacement,self.displayy-100)
+          pygame.display.update()
+          displacement += 100
+          done = False
+          active = True
+          appear = False
+      if displacement >= self.displayx:
+       super = False
+      print(self.displayx)
+    
+
+
+
+
+
+
 https://www.geeksforgeeks.org/how-to-display-multiple-images-in-one-window-using-opencv-python/?ref=rp
 
 Controller +inputbox --> controller --> pokemon --> controller
